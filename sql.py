@@ -1,5 +1,5 @@
 from math import e
-import config, time, sql
+import time, sql
 from datetime import date, datetime
 import psycopg, os, random
 from dotenv import load_dotenv
@@ -29,6 +29,8 @@ class InstamintLoader():
                 print(username+str(n)+ '@' + email_domain,username+str(n))
                 self.cur.execute('INSERT INTO USR (EMAIL,USER_NAME,FULL_NAME,IS_DISABLED,PASSWORD,PROFILE_PHOTO_URL,CREATED_BY,CREATED_DT, ROLE_ID) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)', \
                 (username+str(n)+ '@' + email_domain,username+str(n),name+str(n),disabled,password,random.choice(InstamintLoader.profile_urls),1,datetime.now(), role_id))
+        self.commit()
+        
 
     
     def add_erc721Contract (self, createdby=102,contract_address='0x6FCA0F70BcC4a86786c79414F8E84BD542F7c250', creator_address='dummy data', deploy_gas_fee=0, \
@@ -146,7 +148,7 @@ class InstamintLoader():
         load_dotenv(".env")
         dbname = os.environ.get('instamint_db_dbname')
         user = os.environ.get('instamint_db_user')
-        pwd = os.environ.get('instamint_db_password')
+        pwd = '0FPir1VejNvgGArD' #os.environ.get('instamint_db_password')
         host = os.environ.get('instamint_db_host')
         port = os.environ.get('instamint_db_port')
         conn = psycopg.connect(dbname=dbname, user=user, password=pwd, host=host,port=port,sslmode='require')

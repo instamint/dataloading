@@ -1,15 +1,13 @@
-import config, time, sql
+import time, sql
 import pandas as pd
 import csv
 from datetime import datetime
 
 date = datetime.now()
-conn = config.get_conn()
-cur  = conn.cursor()
 il   = sql.InstamintLoader()
 
 #this will be a dynamic command line menu
-opt = "trade"
+opt = "usr"
 
 
 if opt == "usr":
