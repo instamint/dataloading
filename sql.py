@@ -13,6 +13,18 @@ class InstamintLoader():
     def add_chain(self,chain):
         self.cur.execute('INSERT INTO CHAIN (created_by,created_dt,last_modified_by,updated_dt,name) VALUES (%s,%s,%s,%s,%s)', 
         (1,datetime.now(),1,datetime.now(),chain))
+    def add_roles(self):
+        sql = """
+        INSERT INTO ROLE_TL (id,    created_by, created_dt, title,  description) 
+        VALUES              (%s,     %s,          %s,        %s,    %s)
+        """
+        self.cur.execute(sql,(1,0,datetime.now(),'admin','admin user'))
+        self.cur.execute(sql,(2,0,datetime.now(),'regular','regular user'))
+
+
+        #self.cur.execute('INSERT INTO ROLE_TL (title,description) VALUES ("reg","reg user")')
+        self.commit()
+
 
     def add_usr(self,username,name,email_domain,profile_url=None,password='$2a$10$e7Wvy/dj49K9r4JaLmt/TuTkEtLvE9MGP3Eh7aJ0bLxB4acxxHE2K',disabled=False,bulk=0, \
         n_rows=0, role_id=2):
@@ -34,7 +46,6 @@ class InstamintLoader():
                 print(username+str(n)+ '@' + email_domain,username+str(n))
                 self.cur.execute('INSERT INTO USR (ID, EMAIL,USER_NAME,FULL_NAME,IS_DISABLED,PASSWORD,PROFILE_PHOTO_URL,CREATED_BY,CREATED_DT,SALT,SALT1,SALT2) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)', \
                 (n,username+str(n)+ '@' + email_domain,username+str(n),name+str(n),disabled,password,random.choice(InstamintLoader.profile_urls),1,datetime.now(),salt,salt1,salt2))
-                self.commit()
                 usr_id = self.cur.fetchone()[0]
                 self.cur.execute('INSERT INTO USER_ROLE (USER_ID, ROLES_ID) VALUES (%s,%s)',(usr_id,role_id))
                 self.commit()

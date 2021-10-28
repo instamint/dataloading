@@ -5,7 +5,7 @@ from datetime import datetime
 
 date = datetime.now()
 il   = sql.InstamintLoader()
-menu = ['usr','erc721Contract','token','erc721token','portfolio','trade','truncate_all']
+menu = ['usr','roles','erc721Contract','token','erc721token','portfolio','trade','truncate_all']
 def display_menu():
     for m in menu:
         print(menu.index(m)+1,': ',m)
@@ -21,6 +21,8 @@ opt = menu[display_menu()]
 
 if opt == "usr":
     il.add_usr(username='adminuser',name='Admin User',email_domain='instamint.com', n_rows =20, bulk=1, role_id=2)
+elif opt == 'roles':
+    il.add_roles()
 
 elif opt == "erc721Contract":
     il.add_erc721Contract(n_rows=100)
