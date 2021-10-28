@@ -21,8 +21,6 @@ class InstamintLoader():
         self.cur.execute(sql,(1,0,datetime.now(),'admin','admin user'))
         self.cur.execute(sql,(2,0,datetime.now(),'regular','regular user'))
 
-
-        #self.cur.execute('INSERT INTO ROLE_TL (title,description) VALUES ("reg","reg user")')
         self.commit()
 
 
@@ -38,7 +36,7 @@ class InstamintLoader():
             self.cur.execute('INSERT INTO USR (EMAIL,USER_NAME,FULL_NAME,IS_DISABLED,PASSWORD,PROFILE_PHOTO_URL,CREATED_BY,CREATED_DT,SALT,SALT1,SALT2) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)', \
             (username + '@' + email_domain,username,name,disabled,password,profile_url,1,datetime.now(),salt,salt1,salt2))
             usr_id = self.cur.fetchone()[0]
-            self.cur.execute('INSERT INTO USER_ROLE (USER_ID, ROLES_ID) VALUES (%s,%s)',(usr_id,role_id))
+            self.cur.execute('INSERT INTO USER_ROLE (USER_ID, ROLE_ID) VALUES (%s,%s)',(usr_id,role_id))
         else:
             start_bulk=1
             n_rows +=1
@@ -46,8 +44,8 @@ class InstamintLoader():
                 print(username+str(n)+ '@' + email_domain,username+str(n))
                 self.cur.execute('INSERT INTO USR (ID, EMAIL,USER_NAME,FULL_NAME,IS_DISABLED,PASSWORD,PROFILE_PHOTO_URL,CREATED_BY,CREATED_DT,SALT,SALT1,SALT2) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)', \
                 (n,username+str(n)+ '@' + email_domain,username+str(n),name+str(n),disabled,password,random.choice(InstamintLoader.profile_urls),1,datetime.now(),salt,salt1,salt2))
-                usr_id = self.cur.fetchone()[0]
-                self.cur.execute('INSERT INTO USER_ROLE (USER_ID, ROLES_ID) VALUES (%s,%s)',(usr_id,role_id))
+                self.commit()
+                self.cur.execute('INSERT INTO USER_ROLE (USER_ID, ROLE_ID) VALUES (%s,%s)',(n,role_id))
                 self.commit()
         
 
