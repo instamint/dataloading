@@ -16,20 +16,28 @@ class InstamintLoader():
 
     def add_usr(self,username,name,email_domain,profile_url=None,password='$2a$10$e7Wvy/dj49K9r4JaLmt/TuTkEtLvE9MGP3Eh7aJ0bLxB4acxxHE2K',disabled=False,bulk=0, \
         n_rows=0, role_id=2):
+        salt = 5
+        salt1 = 's2'
+        salt2 = 's3'
 
         if profile_url == None:
             profile_url = random.choice(InstamintLoader.profile_urls)
         if bulk==0:
-            self.cur.execute('INSERT INTO USR (EMAIL,USER_NAME,FULL_NAME,IS_DISABLED,PASSWORD,PROFILE_PHOTO_URL,CREATED_BY,CREATED_DT, ROLE_ID) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)', \
-            (username + '@' + email_domain,username,name,disabled,password,profile_url,1,datetime.now(), role_id))
+            self.cur.execute('INSERT INTO USR (EMAIL,USER_NAME,FULL_NAME,IS_DISABLED,PASSWORD,PROFILE_PHOTO_URL,CREATED_BY,CREATED_DT,SALT,SALT1,SALT2) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)', \
+            (username + '@' + email_domain,username,name,disabled,password,profile_url,1,datetime.now(),salt,salt1,salt2))
+            usr_id = self.cur.fetchone()[0]
+            self.cur.execute('INSERT INTO USER_ROLE (USER_ID, ROLES_ID) VALUES (%s,%s)',(usr_id,role_id))
         else:
             start_bulk=1
             n_rows +=1
             for n in range(start_bulk, n_rows):
                 print(username+str(n)+ '@' + email_domain,username+str(n))
-                self.cur.execute('INSERT INTO USR (EMAIL,USER_NAME,FULL_NAME,IS_DISABLED,PASSWORD,PROFILE_PHOTO_URL,CREATED_BY,CREATED_DT, ROLE_ID) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)', \
-                (username+str(n)+ '@' + email_domain,username+str(n),name+str(n),disabled,password,random.choice(InstamintLoader.profile_urls),1,datetime.now(), role_id))
-        self.commit()
+                self.cur.execute('INSERT INTO USR (ID, EMAIL,USER_NAME,FULL_NAME,IS_DISABLED,PASSWORD,PROFILE_PHOTO_URL,CREATED_BY,CREATED_DT,SALT,SALT1,SALT2) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)', \
+                (n,username+str(n)+ '@' + email_domain,username+str(n),name+str(n),disabled,password,random.choice(InstamintLoader.profile_urls),1,datetime.now(),salt,salt1,salt2))
+                self.commit()
+                usr_id = self.cur.fetchone()[0]
+                self.cur.execute('INSERT INTO USER_ROLE (USER_ID, ROLES_ID) VALUES (%s,%s)',(usr_id,role_id))
+                self.commit()
         
 
     
@@ -137,12 +145,12 @@ class InstamintLoader():
     
     def truncate_all(self):
         self.cur.execute('SELECT table_name FROM information_schema.tables WHERE table_schema=\'public\' AND table_type=\'BASE TABLE\'; ')
-        for table in self.cur:
-            self.cur.execute("truncate table " + table + " cascade;")
-
- 
-
+        res = self.cur.fetchall()
+        for table in res:
+            print('truncating',table)
+            self.cur.execute("truncate table " + table[0] + " cascade;")
     def commit(self):
+        print('committing..')
         self.conn.commit()
     def get_conn(self):
         load_dotenv(".env")

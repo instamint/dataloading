@@ -5,9 +5,18 @@ from datetime import datetime
 
 date = datetime.now()
 il   = sql.InstamintLoader()
+menu = ['usr','erc721Contract','token','erc721token','portfolio','trade','truncate_all']
+def display_menu():
+    for m in menu:
+        print(menu.index(m)+1,': ',m)
+    choice = int(input('Select: '))
+    return choice-1
+
 
 #this will be a dynamic command line menu
-opt = "usr"
+
+opt = menu[display_menu()]
+
 
 
 if opt == "usr":
