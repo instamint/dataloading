@@ -50,53 +50,59 @@ class InstamintLoader():
         
 
     
-    def add_erc721Contract (self, createdby=102,contract_address='0x6FCA0F70BcC4a86786c79414F8E84BD542F7c250', creator_address='dummy data', deploy_gas_fee=0, \
+    def add_erc721Contract (self, createdby=1,contract_address='0x6FCA0F70BcC4a86786c79414F8E84BD542F7c250', creator_address='dummy data', deploy_gas_fee=0, \
                             etherscan_url='https://etherscan.io/address/0x6FCA0F70BcC4a86786c79414F8E84BD542F7c250', owner_address='0x5F1d4F3F283A81Eb118FE59E2F4450C90F0e017', \
                             deploy_success=True, name='dummy data', symbol='dummy data', bulk=0, n_rows=1):
 
-            start_bulk = 1
-            
-            itera = 1
+            start_bulk = 1           
+           
             for n in range(start_bulk, n_rows + 1):
-                self.cur.execute("INSERT INTO ERC721_CONTRACT (CREATED_BY, CREATED_DT, LAST_MODIFIED_BY, UPDATED_DT, CONTRACT_ADDRESS, CREATOR_ADDRESS, DEPLOY_GAS_FEE, ETHERSCAN_URL, OWNER_ADDRESS, DEPLOY_DT, " \
-                                                        "DEPLOY_SUCCESS, NAME, SYMBOL) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) ", \
-                            (createdby,datetime.now(), createdby ,datetime.now(), contract_address, creator_address, deploy_gas_fee, etherscan_url, owner_address, datetime.now(), deploy_success, name + " " + \
-                            str(itera), symbol + " " + str(itera)))
-                itera+=1
+                self.cur.execute("INSERT INTO ERC721_CONTRACT (ID, CREATED_BY, CREATED_DT, LAST_MODIFIED_BY, UPDATED_DT, CONTRACT_ADDRESS, CREATOR_ADDRESS, DEPLOY_GAS_FEE, ETHERSCAN_URL, OWNER_ADDRESS, DEPLOY_DT, " \
+                                                        "DEPLOY_SUCCESS, NAME, SYMBOL) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) ", \
+                            (n,createdby,datetime.now(), createdby ,datetime.now(), contract_address, creator_address, deploy_gas_fee, etherscan_url, owner_address, datetime.now(), deploy_success, name + " " + \
+                            str(n), symbol + " " + str(n)))
+                self.commit()
 
     
-    def add_erc721token (self, bulk=0, createdby=102, description='test description', n_rows=1, ipfs_image_cid='dummy data', image_ipfs_url='dummy data', meta_data = 'dummy data', \
-                         meta_data_ipfs_cid ='dummy data', meta_data_ipfs_url='dummy data', mint_gas_fee=0, mint_success=True, name="Test Name", title="Test Title", \
-                         view_public=True, contract_id=1, token_id=1, image_web_url='dummy data'):
+    def add_erc721token (self, id=1, created_by=1, created_dt=datetime.now(), last_modified_by=None, updated_dt=None, active=True, best_ask=0, best_bid=0, featured=True, fotd=True, public_view=True, \
+                        trending=True, chain_id=1, description='dummy data', image_ipfs_url='dummy data', image_web_url='dummy data', ipfs_image_cid='dummy data', meta_data='dummy data', meta_data_ipfs_cid='dummy data', \
+                        meta_data_ipfs_url='dummy data', mint_gas_fee=0, mint_success=True, name='dummy data', title='dummy data', view_public=True, contract_id=1, n_rows=1):
          
          start_bulk = 1
-         #n_rows+=1       
-         
+                  
          for n in range(start_bulk, n_rows + 1):
                          
-            print("token: " + str(token_id) + " contract: " + str(contract_id))
-            self.cur.execute("INSERT INTO erc721token (CREATED_BY, CREATED_DT, LAST_MODIFIED_BY, UPDATED_DT, DESCRIPTION, IPFS_IMAGE_CID, IMAGE_IPFS_URL, META_DATA, META_DATA_IPFS_CID, META_DATA_IPFS_URL," \
-                             "MINT_GAS_FEE, MINT_SUCCESS, NAME, TITLE, VIEW_PUBLIC, CONTRACT_ID, TOKEN_ID, IMAGE_WEB_URL) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", \
-                                (createdby, datetime.now(), createdby, datetime.now(), description, ipfs_image_cid, image_ipfs_url, meta_data, meta_data_ipfs_cid, meta_data_ipfs_url, \
-                                 mint_gas_fee, mint_success, name + " " + str(token_id), title + " " + str(token_id), view_public, contract_id, token_id, image_web_url))
+            print("id: " + str(id) + " name: " + name)
+            self.cur.execute("INSERT INTO erc721token (ID, CREATED_BY, CREATED_DT, LAST_MODIFIED_BY, UPDATED_DT, ACTIVE, BEST_ASK, BEST_BID, FEATURED, FOTD, PUBLIC_VIEW, TRENDING, CHAIN_ID, DESCRIPTION, "\
+                                                      "IMAGE_IPFS_URL, IMAGE_WEB_URL, IPFS_IMAGE_CID, META_DATA, META_DATA_IPFS_CID, META_DATA_IPFS_URL, MINT_GAS_FEE, MINT_SUCCESS, NAME, TITLE, VIEW_PUBLIC, "\
+                                                      "CONTRACT_ID) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", \
+                                (id, created_by, created_dt, last_modified_by, updated_dt, active, best_ask, best_bid, featured, fotd, public_view, trending, chain_id, description, \
+                                image_ipfs_url, image_web_url, ipfs_image_cid, meta_data, meta_data_ipfs_cid, meta_data_ipfs_url, mint_gas_fee, mint_success, name, title, view_public, contract_id))
+            self.commit()
 
 
-    def add_token (self, createdby=102, created_dt=datetime.now(), last_modified_by=102, updated_dt=None, best_ask=0, best_bid=0,featured=True, public_view=True, chain_id=1, \
-                    trending=True, active=True, fotd=True, n_rows=1):
+    def add_token (self, createdby=1, token_id=1, created_dt=datetime.now(), last_modified_by=1, updated_dt=None,  best_ask=0, best_bid=0,featured=True, public_view=True,  \
+                    trending=True, active=True, fotd=True, n_rows=1, description='dummy data', image_ipfs_url='dummy data',image_web_url='dummy data', \
+                    ipfs_image_cid='dummy data', meta_data='dummy data', meta_data_ipfs_cid='dummy data', meta_data_ipfs_url='dummy data', mint_gas_fee=0, \
+                    mint_success=True, name='dummy data', title='dummy data', view_public=True, chain_id=1, contract_id=0):
         start_bulk= 1
          
         for n in range(start_bulk, n_rows + 1):
-            self.cur.execute("INSERT INTO TOKEN (CREATED_BY, CREATED_DT, LAST_MODIFIED_BY, UPDATED_DT, BEST_ASK, BEST_BID, FEATURED, PUBLIC_VIEW, CHAIN_ID, TRENDING, ACTIVE, FOTD) " \
-                            "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", (createdby, created_dt, last_modified_by, updated_dt, best_ask, best_bid, featured, public_view, chain_id, trending, active, fotd))
+            self.cur.execute("INSERT INTO TOKEN (TOKEN_TYPE, ID, CREATED_BY, CREATED_DT, LAST_MODIFIED_BY, UPDATED_DT, ACTIVE, BEST_ASK, BEST_BID, FEATURED, FOTD, PUBLIC_VIEW, TRENDING, DESCRIPTION, IMAGE_IPFS_URL, " \
+                                                "IMAGE_WEB_URL, IPFS_IMAGE_CID, META_DATA, META_DATA_IPFS_CID, META_DATA_IPFS_URL, MINT_GAS_FEE, MINT_SUCCESS, NAME, TITLE, VIEW_PUBLIC, CHAIN_ID, CONTRACT_ID) " \
+                            "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", \
+                             ("type "+str(token_id), token_id, createdby, created_dt, last_modified_by, updated_dt, active, best_ask, best_bid, featured, fotd, public_view, trending,description, image_ipfs_url,\
+                                 image_web_url, ipfs_image_cid, meta_data, meta_data_ipfs_cid, meta_data_ipfs_url, mint_gas_fee, mint_success, name, title, view_public, chain_id, contract_id ))
+            self.commit()
             
 
-    def add_portfolio(self, created_by=102, created_dt=datetime.now(), last_modified_by=None, updated_dt=None, owner_id=0, token_id=0, n_rows=1):
+    def add_portfolio(self,portfolio_id, created_by=1, created_dt=datetime.now(), last_modified_by=None, updated_dt=None, owner_id=0, token_id=0, n_rows=1):
         list_usrs     = []
         list_token_id = []
         
         start_bulk = 1
         
-        self.cur.execute('select id from usr where user_name like \'%john%\' ')        
+        self.cur.execute('select id from usr')        
         for r in self.cur:
             usr_id = r[0]
             list_usrs.append(usr_id)
@@ -112,8 +118,9 @@ class InstamintLoader():
             owner_id = random.choice(list_usrs)
             token_id = random.choice(list_token_id)
             
-            self.cur.execute("INSERT INTO PORTFOLIO(CREATED_BY, CREATED_DT, LAST_MODIFIED_BY, UPDATED_DT, OWNER_ID, TOKEN_ID) VALUES (%s,%s,%s,%s,%s,%s)",
-                            (created_by, created_dt, last_modified_by, updated_dt, owner_id, token_id))
+            self.cur.execute("INSERT INTO PORTFOLIO(ID,CREATED_BY, CREATED_DT, LAST_MODIFIED_BY, UPDATED_DT, OWNER_ID, TOKEN_ID) VALUES (%s,%s,%s,%s,%s,%s,%s)",
+                            (portfolio_id,created_by, created_dt, last_modified_by, updated_dt, owner_id, token_id))
+            self.commit()
 
         
     def add_trades(self, created_by=102, created_dt=datetime.now(), last_modified_by=None, updated_dt=None, net_to_seller=0.002, platform_fee=0.0, successful=True, transaction_amount=0, \
@@ -150,7 +157,7 @@ class InstamintLoader():
             self.cur.execute("INSERT INTO TRADE(CREATED_BY, CREATED_DT, LAST_MODIFIED_BY, UPDATED_DT, NET_TO_SELLER, PLATFORM_FEE, SUCCESSFUL, TRANSACTION_AMOUNT, BUYER_ID, SELLER_ID, TOKEN_ID)" \
                             " VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", \
                             (created_by, created_dt, last_modified_by, updated_dt, net_to_seller, round(platform_fee,2), successful, transaction_amount, buyer_id, seller_id, token_id))
-        
+            self.commit()
     
     def truncate_all(self):
         self.cur.execute('SELECT table_name FROM information_schema.tables WHERE table_schema=\'public\' AND table_type=\'BASE TABLE\'; ')

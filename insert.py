@@ -13,11 +13,7 @@ def display_menu():
     return choice-1
 
 
-#this will be a dynamic command line menu
-
 opt = menu[display_menu()]
-
-
 
 if opt == "usr":
     il.add_usr(username='adminuser',name='Admin User',email_domain='instamint.com', n_rows =20, bulk=1, role_id=2)
@@ -36,8 +32,8 @@ elif opt == "erc721token":
     with open('erc721tokens.csv') as f:
         data=[tuple(line) for line in csv.reader(f)]
 
-    n_token = 81
-    n_contract = 676
+    n_token = 1
+    n_contract = 1
     for row in data:
         
         item = row[0].split(',')
@@ -80,4 +76,4 @@ elif opt == "trade":
 elif opt == "truncate_all":
     il.truncate_all()            
 
-il.commit()
+ 
