@@ -1,19 +1,43 @@
-import time, sql
+import time, InstamintLoaderBlue, InstamintLoaderRed, InstamintLoaderDefault
 import pandas as pd
 import csv
 from datetime import datetime
 
 date = datetime.now()
-il   = sql.InstamintLoader()
+
 menu = ['usr','roles','erc721Contract','token','erc721token','portfolio','trade','truncate_all']
+
+menu_db = ['Default','Blue', "Red"]
+
 def display_menu():
-    for m in menu:
-        print(menu.index(m)+1,': ',m)
-    choice = int(input('Select: '))
-    return choice-1
+    try:
+        for item_db_menu in menu_db:
+            print(menu_db.index(item_db_menu)+1,': ', item_db_menu)        
+        choice_db = int(input('Select DataBase: '))
+        choice_db_str = menu_db[choice_db - 1]
+
+        for m in menu:
+            print(menu.index(m)+1,': ',m)
+        choice = int(input('Select Table: '))       
+        choice_str = menu[choice - 1]
+
+        res_str = choice_db_str +"|"+ choice_str
+    except:
+        res_str = "Error, invalid option"
+        print(res_str)
+
+    return res_str
 
 
-opt = menu[display_menu()]
+opt = display_menu()
+
+if opt[0] == "Red":
+    il = InstamintLoaderRed.InstamintLoader()
+elif opt[0] == "Blue":
+    il = InstamintLoaderBlue.InstamintLoader()
+elif opt[0] == "Default":
+    il = InstamintLoaderDefault.InstamintLoader()
+
 
 if opt == "usr":
     il.add_usr(username='adminuser',name='Admin User',email_domain='instamint.com', n_rows =20, bulk=1, role_id=2)
@@ -74,6 +98,8 @@ elif opt == "trade":
     il.add_trades(n_rows=100)
 
 elif opt == "truncate_all":
-    il.truncate_all()            
+    il.truncate_all()      
+
+ 
 
  

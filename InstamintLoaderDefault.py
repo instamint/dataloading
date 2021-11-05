@@ -1,5 +1,5 @@
 from math import e
-import time, sql
+import time
 from datetime import date, datetime
 import psycopg, os, random
 from dotenv import load_dotenv
